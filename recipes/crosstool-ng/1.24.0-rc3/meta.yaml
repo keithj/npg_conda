@@ -1,0 +1,44 @@
+{% set version = "1.24.0-rc3" %}
+
+package:
+  name: crosstool-ng
+  version: "{{ version }}"
+
+about:
+  home: https://crosstool-ng.github.io/
+  license: GPLv2
+  summary: "Crosstool-NG is a versatile (cross) toolchain generator."
+
+build:
+  number: 0
+
+source:
+  git_url: https://github.com/crosstool-ng/crosstool-ng
+  git_ref: {{ version }}
+
+requirements:
+  build:
+    - {{ compiler("c") }}
+    - autoconf
+    - automake
+    - bison
+    - flex
+    - gettext
+    - make
+    - pkg-config
+    - help2man
+    - unzip
+  host:
+    - libtool
+    - ncurses
+  run:
+    - libtool
+    - make
+    - ncurses
+
+files:
+  - bin/ct-ng
+  
+test:
+  commands:
+    - ct-ng -h
