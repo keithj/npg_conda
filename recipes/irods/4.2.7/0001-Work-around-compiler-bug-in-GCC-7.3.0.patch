@@ -1,0 +1,53 @@
+From 1376bef529a203fbebe3247b6075ab16b0e95eea Mon Sep 17 00:00:00 2001
+From: Keith James <dev@deoxybyte.co.uk>
+Date: Sat, 9 May 2020 12:48:19 +0100
+Subject: [PATCH] Work around compiler bug in GCC 7.3.0
+
+See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87032
+---
+ lib/core/src/packStruct.cpp | 25 +++++++++----------------
+ 1 file changed, 9 insertions(+), 16 deletions(-)
+
+diff --git a/lib/core/src/packStruct.cpp b/lib/core/src/packStruct.cpp
+index 473f377c9..cf08f72f0 100644
+--- a/lib/core/src/packStruct.cpp
++++ b/lib/core/src/packStruct.cpp
+@@ -345,26 +345,19 @@ packTypeLookup( const char *typeName ) {
+ 
+ packedOutput_t
+ initPackedOutput( const int len ) {
+-    return {
+-        .bBuf={
+-            .buf=malloc(len),
+-            .len=0
+-        },
+-        .bufSize=len,
+-        .nopackBufArray={}
+-    };
++  bytesBuf_t bBuf = {.len = 0,
++                     .buf = malloc(len)};
++  return {.bBuf    = bBuf,
++          .bufSize = len};
+ }
+ 
+ packedOutput_t
+ initPackedOutputWithBuf( void *buf, const int len ) {
+-    return {
+-        .bBuf={
+-            .buf=buf,
+-            .len=0
+-        },
+-        .bufSize=len,
+-        .nopackBufArray={}
+-    };
++ bytesBuf_t bBuf = {.len = 0,
++                    .buf = malloc(len)};
++ return {.bBuf           = bBuf,
++         .bufSize        = len,
++         .nopackBufArray = {}};
+ }
+ 
+ int
+-- 
+2.17.1
+
